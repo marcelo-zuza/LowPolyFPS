@@ -4,6 +4,10 @@ using UnityEngine.UIElements;
 
 public class GunController : MonoBehaviour
 {
+    [Header("Current Gun Configurantion")]
+    [SerializeField] public bool isUsingRifle = false;
+    [SerializeField] public bool isUsingPistol = false;
+
     [Header("Gun Shake Configuration")]
     [SerializeField] public float swayAmountX = 0.05f;
     [SerializeField] public float swayAmountY = 0.05f;
@@ -18,9 +22,18 @@ public class GunController : MonoBehaviour
     public float timerX;
     public float timerY;
 
+    [Header("Gun Manager")]
+    
+
+    public RifleController rifleController;
+    public WeaponSwitcher weaponSwitcher;
+
 
     void Start()
     {
+        rifleController = GameObject.Find("Rifle").GetComponent<RifleController>();
+        weaponSwitcher = GameObject.Find("WeaponSwitcher").GetComponent<WeaponSwitcher>();
+
         initialPosition = transform.localPosition;
         initialWeaponPosition = transform.localPosition;
     }
@@ -28,6 +41,17 @@ public class GunController : MonoBehaviour
     void Update()
     {
         ShakeGun();
+
+        if (isUsingRifle)
+        {
+            if (Input.GetButton("Fire1") && rifleController.currentAmmo > 0 && Time.time - rifleController.lastFireTime >= 1f / rifleController.fireRate)
+            {
+                rifleController.Shoot();
+                rifleController.lastFireTime = Time.time;
+                StartCoroutine(MuzzleFlashEffect(rifleController.muzzleFlash, rifleController.muzzleFlashDuration));
+                StartCoroutine(RecoilEffect(rifleController.recoilDuration, rifleController.recoilForce));
+            }
+        }
     }
 
     void ShakeGun()
@@ -52,17 +76,11 @@ public class GunController : MonoBehaviour
             timerY = 0;
         }
     }
-    public IEnumerator MuzzleFlashEffect(GameObject muzzleFlash, float muzzleFlashDuration)
+    IEnumerator MuzzleFlashEffect(GameObject muzzleFlash, float muzzleFlashDuration)
     {
         if (muzzleFlash == null)
         {
             Debug.Log("muzzleFlash no assigned");
-            yield break;
-        }
-
-        if (firePoint == null)
-        {
-            Debug.Log("firePoint not assigned");
             yield break;
         }
 
