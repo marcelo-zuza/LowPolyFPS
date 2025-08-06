@@ -14,24 +14,46 @@ public class WeaponSwitcher : MonoBehaviour
 
     void Update()
     {
+        if (ownedWeapons.Count < 1) return;
 
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
+        {
+            currentWeaponIndex = (currentWeaponIndex + 1) % ownedWeapons.Count;
+            SelectWeapon(currentWeaponIndex);
+        }
     }
 
-    void SelectWeapon(int index)
+    public void SelectWeapon(int index)
     {
         for (int i = 0; i < ownedWeapons.Count; i++)
         {
             ownedWeapons[i].SetActive(i == index);
-            if (i == 0)
-            {
+        }
+
+        switch (index)
+        {
+            case 0:
                 gunController.isUsingPistol = true;
                 gunController.isUsingRifle = false;
-            }
-            else if (i == 1)
-            {
+                break;
+            case 1:
                 gunController.isUsingPistol = false;
-                gunController.isUsingRifle = true;     
-            }
+                gunController.isUsingRifle = true;
+                break;
+            default:
+                gunController.isUsingPistol = false;
+                gunController.isUsingRifle = false;
+                break;
+        }
+    }
+
+    public void AddWeapon(GameObject newWeapon)
+    {
+        if (!ownedWeapons.Contains(newWeapon))
+        {
+            ownedWeapons.Add(newWeapon);
+            newWeapon.gameObject.SetActive(false);
         }
     }
 }

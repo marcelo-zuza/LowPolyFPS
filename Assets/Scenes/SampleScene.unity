@@ -119,6 +119,11 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &132444994 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 37f55cbf69d69ce8dad5214a36eb57ee, type: 3}
+  m_PrefabInstance: {fileID: 2030748905}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &161776087
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,6 +217,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &202119826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 42b734e3fb832c9d89d129fdf4069f09, type: 3}
+  m_PrefabInstance: {fileID: 382273841}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,7 +422,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 42b734e3fb832c9d89d129fdf4069f09, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -661,6 +671,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 434705214}
+  - component: {fileID: 434705215}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -684,6 +695,38 @@ Transform:
   - {fileID: 1982752521}
   m_Father: {fileID: 700998555}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &434705215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 434705213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec458b25f1fb6536fba34f68a95ca4ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pistolObject: {fileID: 132444994}
+  currentAmmo: 0
+  maxAmmo: 12
+  reserveAmmo: 0
+  reloadDuration: 1.5
+  reloadSound: {fileID: 0}
+  damage: 5
+  range: 70
+  fireRate: 7
+  recoilForce: 0.1
+  recoilDuration: 0.1
+  muzzleFlash: {fileID: 1848888833}
+  muzzleFlashDuration: 0.1
+  playerCamera: {fileID: 330585545}
+  nextFireTime: 1
+  lastFireTime: 0
+  initialWeaponPosition: {x: 0, y: 0, z: 0}
+  gunShotSound: {fileID: 8300000, guid: ed9a8212320c48adab9f210eeb533351, type: 3}
+  audioSource: {fileID: 700998557}
+  gunController: {fileID: 700998556}
 --- !u!1 &440999254
 GameObject:
   m_ObjectHideFlags: 0
@@ -816,7 +859,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3299ab28ee106e5d9a0dce68b58a1f5, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.01129
+      value: -0.01257
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: f3299ab28ee106e5d9a0dce68b58a1f5, type: 3}
       propertyPath: m_LocalPosition.y
@@ -907,8 +950,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 825733397}
   - {fileID: 434705214}
+  - {fileID: 825733397}
   - {fileID: 746482778}
   m_Father: {fileID: 330585546}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -924,8 +967,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f77f21aa63dfaeead56245111bb032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUsingRifle: 1
-  isUsingPistol: 0
+  isUsingRifle: 0
+  isUsingPistol: 1
   swayAmountX: 0.05
   swayAmountY: 0.05
   swaySpeed: 5
@@ -937,6 +980,7 @@ MonoBehaviour:
   timerX: 0
   timerY: 0
   rifleController: {fileID: 0}
+  pistolController: {fileID: 0}
   weaponSwitcher: {fileID: 0}
 --- !u!82 &700998557
 AudioSource:
@@ -1079,9 +1123,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e516be11b9d26faaa6bdfd6a07f390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedWeapons: []
+  ownedWeapons:
+  - {fileID: 434705213}
+  - {fileID: 825733396}
   currentWeaponIndex: 0
-  gunController: {fileID: 0}
+  gunController: {fileID: 700998556}
 --- !u!1 &825733396
 GameObject:
   m_ObjectHideFlags: 0
@@ -1127,6 +1173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9470af955595ffb9fb0f85c61bafddf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rifleObject: {fileID: 202119826}
   currentAmmo: 0
   maxAmmo: 32
   reserveAmmo: 0
@@ -1134,7 +1181,7 @@ MonoBehaviour:
   reloadSound: {fileID: 0}
   damage: 10
   range: 100
-  fireRate: 15
+  fireRate: 7
   recoilForce: 0.1
   recoilDuration: 0.1
   muzzleFlash: {fileID: 637974345}
@@ -1362,6 +1409,11 @@ MonoBehaviour:
 --- !u!4 &1723905943 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f3299ab28ee106e5d9a0dce68b58a1f5, type: 3}
+  m_PrefabInstance: {fileID: 577169540}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1848888833 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f3299ab28ee106e5d9a0dce68b58a1f5, type: 3}
   m_PrefabInstance: {fileID: 577169540}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &1982752521 stripped

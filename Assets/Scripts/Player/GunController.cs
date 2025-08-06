@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,6 +8,11 @@ public class GunController : MonoBehaviour
     [Header("Current Gun Configurantion")]
     [SerializeField] public bool isUsingRifle = false;
     [SerializeField] public bool isUsingPistol = false;
+
+    [Header("Realod Settings")]
+    [SerializeField] public float reloadDuration = 1.5f;
+    [SerializeField] public AudioClip reloadSound;
+    private bool isReloading = false;
 
     [Header("Gun Shake Configuration")]
     [SerializeField] public float swayAmountX = 0.05f;
@@ -23,15 +29,15 @@ public class GunController : MonoBehaviour
     public float timerY;
 
     [Header("Gun Manager")]
-    
-
     public RifleController rifleController;
+    public PistolController pistolController;
     public WeaponSwitcher weaponSwitcher;
 
 
     void Start()
     {
         rifleController = GameObject.Find("Rifle").GetComponent<RifleController>();
+        pistolController = GameObject.Find("Pistol").GetComponent<PistolController>();
         weaponSwitcher = GameObject.Find("WeaponSwitcher").GetComponent<WeaponSwitcher>();
 
         initialPosition = transform.localPosition;
@@ -41,17 +47,39 @@ public class GunController : MonoBehaviour
     void Update()
     {
         ShakeGun();
-
-        if (isUsingRifle)
+        if (pistolController != null)
         {
-            if (Input.GetButton("Fire1") && rifleController.currentAmmo > 0 && Time.time - rifleController.lastFireTime >= 1f / rifleController.fireRate)
+            if (isUsingPistol && !isReloading)
             {
-                rifleController.Shoot();
-                rifleController.lastFireTime = Time.time;
-                StartCoroutine(MuzzleFlashEffect(rifleController.muzzleFlash, rifleController.muzzleFlashDuration));
-                StartCoroutine(RecoilEffect(rifleController.recoilDuration, rifleController.recoilForce));
+                if (Input.GetButtonDown("Fire1") && pistolController.currentAmmo > 0 && Time.time - pistolController.lastFireTime >= 1f / pistolController.fireRate)
+                {
+                    pistolController.Shoot();
+                    pistolController.lastFireTime = Time.time;
+                    StartCoroutine(MuzzleFlashEffect(pistolController.muzzleFlash, pistolController.muzzleFlashDuration));
+                    StartCoroutine(RecoilEffect(pistolController.recoilDuration, pistolController.recoilDuration));
+
+                }
             }
         }
+        else Debug.Log("PistolController not found");
+
+
+        if (rifleController != null)
+        {
+            if (isUsingRifle && !isReloading)
+            {
+                if (Input.GetButton("Fire1") && rifleController.currentAmmo > 0 && Time.time - rifleController.lastFireTime >= 1f / rifleController.fireRate)
+                {
+                    rifleController.Shoot();
+                    rifleController.lastFireTime = Time.time;
+                    StartCoroutine(MuzzleFlashEffect(rifleController.muzzleFlash, rifleController.muzzleFlashDuration));
+                    StartCoroutine(RecoilEffect(rifleController.recoilDuration, rifleController.recoilForce));
+                }
+            }
+        }
+        else Debug.Log("RifleController not found");
+
+
     }
 
     void ShakeGun()
@@ -76,6 +104,7 @@ public class GunController : MonoBehaviour
             timerY = 0;
         }
     }
+    
     IEnumerator MuzzleFlashEffect(GameObject muzzleFlash, float muzzleFlashDuration)
     {
         if (muzzleFlash == null)
