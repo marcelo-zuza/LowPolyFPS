@@ -13,7 +13,7 @@ public class RifleController : MonoBehaviour
     [Header("Realod Settings")]
     [SerializeField] public float reloadDuration = 1.5f;
     [SerializeField] public AudioClip reloadSound;
-    private bool isReloading = false;
+    public bool isReloading = false;
 
     [Header("Gun Damage")]
     [SerializeField] public float damage = 10f;
@@ -48,7 +48,7 @@ public class RifleController : MonoBehaviour
     void Update()
     {
         activingRifle();
-        
+        if (Input.GetKeyDown(KeyCode.R)) StartCoroutine(Reload());
     }
 
     public void Shoot()
@@ -68,7 +68,7 @@ public class RifleController : MonoBehaviour
 
     public IEnumerator Reload()
     {
-        if (reserveAmmo > 0)
+        if (reserveAmmo > 0 && currentAmmo < maxAmmo)
         {
             isReloading = true;
             Vector3 startPosition = transform.localPosition;
@@ -85,8 +85,18 @@ public class RifleController : MonoBehaviour
                 yield return null;
             }
 
-            reserveAmmo -= (maxAmmo - currentAmmo);
-            currentAmmo += (maxAmmo - currentAmmo);
+            if (reserveAmmo < maxAmmo)
+            {
+                currentAmmo = reserveAmmo;
+                reserveAmmo = 0;
+            }
+            else
+            {
+                reserveAmmo -= (maxAmmo - currentAmmo);
+                currentAmmo += (maxAmmo - currentAmmo);
+
+            }
+            transform.localPosition = startPosition;
             isReloading = false;
         }
 

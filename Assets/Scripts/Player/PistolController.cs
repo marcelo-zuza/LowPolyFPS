@@ -2,7 +2,9 @@ using UnityEngine;
 
 public class PistolController : MonoBehaviour
 {
+    [Header("3D Objects")]
     [SerializeField] public GameObject pistolObject;
+
     [Header("Ammunation")]
     [SerializeField] public float currentAmmo;
     [SerializeField] public float maxAmmo = 12f;
@@ -52,11 +54,16 @@ public class PistolController : MonoBehaviour
         if (isReloading || currentAmmo <= 0) return;
 
         if (gunShotSound != null && audioSource != null) audioSource.PlayOneShot(gunShotSound);
+        else Debug.Log("AudioSource or gunShootSound not found");
 
-        if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, range))
+        if (playerCamera != null)
         {
-            Debug.Log("Acetou");
+            if (Physics.Raycast(playerCamera.transform.position, playerCamera.transform.forward, out RaycastHit hit, range))
+            {
+                Debug.Log("Acetou");
+            }
         }
+        else Debug.Log("PlayerCamera not found");
     }
 
     public void ActivingPistol()

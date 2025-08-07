@@ -8,6 +8,7 @@ public class GunController : MonoBehaviour
     [Header("Current Gun Configurantion")]
     [SerializeField] public bool isUsingRifle = false;
     [SerializeField] public bool isUsingPistol = false;
+    [SerializeField] public bool isUsingLaserGun = false;
 
     [Header("Realod Settings")]
     [SerializeField] public float reloadDuration = 1.5f;
@@ -31,6 +32,7 @@ public class GunController : MonoBehaviour
     [Header("Gun Manager")]
     public RifleController rifleController;
     public PistolController pistolController;
+    public LaserGunController laserGunController;
     public WeaponSwitcher weaponSwitcher;
 
 
@@ -38,6 +40,7 @@ public class GunController : MonoBehaviour
     {
         rifleController = GameObject.Find("Rifle").GetComponent<RifleController>();
         pistolController = GameObject.Find("Pistol").GetComponent<PistolController>();
+        laserGunController = GameObject.Find("LaserGun").GetComponent<LaserGunController>();
         weaponSwitcher = GameObject.Find("WeaponSwitcher").GetComponent<WeaponSwitcher>();
 
         initialPosition = transform.localPosition;
@@ -47,6 +50,7 @@ public class GunController : MonoBehaviour
     void Update()
     {
         ShakeGun();
+        // Pistol Shoot
         if (pistolController != null)
         {
             if (isUsingPistol && !isReloading)
@@ -63,10 +67,10 @@ public class GunController : MonoBehaviour
         }
         else Debug.Log("PistolController not found");
 
-
+        // Rifle Shoot
         if (rifleController != null)
         {
-            if (isUsingRifle && !isReloading)
+            if (isUsingRifle && !rifleController.isReloading)
             {
                 if (Input.GetButton("Fire1") && rifleController.currentAmmo > 0 && Time.time - rifleController.lastFireTime >= 1f / rifleController.fireRate)
                 {
@@ -79,6 +83,20 @@ public class GunController : MonoBehaviour
         }
         else Debug.Log("RifleController not found");
 
+        // Laser Gun Shoot
+        if (laserGunController != null)
+        {
+            if (isUsingLaserGun && !laserGunController.isReloading)
+            {
+                if (Input.GetButtonDown("Fire1") && laserGunController.currentAmmo > 0 && Time.time - laserGunController.lastFireTime >= 1f / laserGunController.fireRate)
+                {
+                    laserGunController.Shoot();
+                    laserGunController.lastFireTime = Time.time;
+                    StartCoroutine(MuzzleFlashEffect(laserGunController.muzzleFlash, laserGunController.muzzleFlashDuration));
+                    StartCoroutine(RecoilEffect(laserGunController.recoilDuration, laserGunController.recoilForce));
+                }
+            }
+        }
 
     }
 

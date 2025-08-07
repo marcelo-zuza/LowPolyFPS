@@ -36,10 +36,17 @@ public class WeaponSwitcher : MonoBehaviour
             case 0:
                 gunController.isUsingPistol = true;
                 gunController.isUsingRifle = false;
+                gunController.isUsingLaserGun = false;
                 break;
             case 1:
                 gunController.isUsingPistol = false;
                 gunController.isUsingRifle = true;
+                gunController.isUsingLaserGun = false;
+                break;
+            case 2:
+                gunController.isUsingLaserGun = true;
+                gunController.isUsingPistol = false;
+                gunController.isUsingRifle = false;
                 break;
             default:
                 gunController.isUsingPistol = false;
